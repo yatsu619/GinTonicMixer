@@ -1,0 +1,89 @@
+<!OCTYPE html>
+<html>
+    <head>
+        <title>Wasserspender</title>
+    <style>
+        @font-face {
+            font-family: 'Kashima';
+            src: url('fonts/Kashima Demo.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body{
+            background-color: #1c3563;  
+            text-align: center;
+            padding: 50px;
+        }
+
+        .title{
+            font-family: 'Kashima', sans-serif;
+            font-size: 5em;
+            color: #000000;
+            margin-bottom: 40px;
+        }
+
+        p{
+            font-size: 2.5em;
+            color: #750505;
+        }
+
+        .box{
+            background-color: white;
+            border-radius: 15px;
+            padding: 80px;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0  0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button{
+            font-size: 1.5em;
+            padding: 10px 30px;
+            margin-top: 20px;
+        }
+    </style>
+    </head>
+    <body>
+        <h1 class="title">Wasserspender5000</h1>
+
+        <div class="box" id="start-screen">
+            <p>Bitte geben Sie Ihren Namen ein:</p>
+            <input type="text" id="nameInput" placeholder="Name eingeben" oninput="pruefeName()">
+            <br><br>
+            <button id="startBtn" onclick="zeigeStatusanzeige()" disabled>Start</button>
+        </div>
+
+        <div class="box" id="status-screen" style="display: none;">
+            <h2>Status</h2>
+            <p id="glasStatus">❌ Glas nicht erkannt</p>
+            <p id="ginStatus">❌ Nicht genug Gin</p>
+            <p id="tonicStatus">❌ Nicht genug Tonic</p>
+            <button onclick="zeigeStart()">Zurück</button>
+        </div>
+
+        <script>
+            function pruefeName(){
+                const name = document.getElementById("nameInput").value.trim();
+                const button = document.getElementById("startBtn");
+                button.disabled = name === "";
+            }
+
+            function zeigeStatusanzeige(){
+                document.getElementById("start-screen").style.display = "none";
+                document.getElementById("status-screen").style.display = "block";
+
+                setTimeout(() => {
+                    document.getElementById("glasStatus").textContent = "✅ Glas erkannt";
+                    document.getElementById("ginStatus").textContent = "✅ Genug Gin";
+                    document.getElementById("tonicStatus").textContent = "✅ Genug Tonic";
+                }, 1000);
+            }
+
+            function zeigeStart(){
+                document.getElementById("status-screen").style.display = "none";
+                document.getElementById("start-screen").style.display = "block";
+            }
+        </script>
+    </body>
+</html>
