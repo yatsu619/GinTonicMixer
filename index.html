@@ -1,6 +1,8 @@
-<!OCTYPE html>
+<!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
         <title>Wasserspender</title>
     <style>
         @font-face {
@@ -9,81 +11,49 @@
             font-weight: normal;
             font-style: normal;
         }
-
-        body{
-            background-color: #1c3563;  
-            text-align: center;
-            padding: 50px;
-        }
-
-        .title{
-            font-family: 'Kashima', sans-serif;
-            font-size: 5em;
-            color: #000000;
-            margin-bottom: 40px;
-        }
-
-        p{
-            font-size: 2.5em;
-            color: #750505;
-        }
-
-        .box{
-            background-color: white;
-            border-radius: 15px;
-            padding: 80px;
-            max-width: 800px;
-            margin: auto;
-            box-shadow: 0  0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        button{
-            font-size: 1.5em;
-            padding: 10px 30px;
-            margin-top: 20px;
-        }
     </style>
     </head>
     <body>
         <h1 class="title">Wasserspender5000</h1>
 
-        <div class="box" id="start-screen">
+        <div class="box-start" id="start-screen">
             <p>Bitte geben Sie Ihren Namen ein:</p>
             <input type="text" id="nameInput" placeholder="Name eingeben" oninput="pruefeName()">
             <br><br>
             <button id="startBtn" onclick="zeigeStatusanzeige()" disabled>Start</button>
         </div>
 
-        <div class="box" id="status-screen" style="display: none;">
+        <div class="box-status" id="status-screen" style="display: none;">
             <h2>Status</h2>
             <p id="glasStatus">❌ Glas nicht erkannt</p>
             <p id="ginStatus">❌ Nicht genug Gin</p>
             <p id="tonicStatus">❌ Nicht genug Tonic</p>
-            <button onclick="zeigeStart()">Zurück</button>
+            <button id="startMix" onclick="mixerStarten()" disabled>Starten</button> 
+            <div id="hinweis" style="margin-top: 30px; display: none;">
+                <p id="hinweisText">⚠️ Bitte Glas bereitstellen</p>
+                <button onlcick="zeigeStatusanzeige()">Fertig</button>
+            </div>                 
         </div>
 
-        <script>
-            function pruefeName(){
-                const name = document.getElementById("nameInput").value.trim();
-                const button = document.getElementById("startBtn");
-                button.disabled = name === "";
-            }
+        <div class="box-lade" id="lade-screen" style="display: none;">
+            <h2>Mischen läuft...</h2>
+            <div id="ladebalken-wrapper" style="background: #ddd; width: 80%; margin: auto; height: 40px; border-radius: 20px; overflow: hidden;">
+                <div id="ladebalken" style="background: #4caf50; height: 100%; width: 0%; transition: width 1s;"></div>
+            </div> 
+            <p id="ladeStatusText">Bitte warten...</p>
+        </div>
 
-            function zeigeStatusanzeige(){
-                document.getElementById("start-screen").style.display = "none";
-                document.getElementById("status-screen").style.display = "block";
+        <div class="box-final" id="final-screen" style="display: none;">
+            <h2>Abgefüllt!</h2>
+            <p>Genieß deinen Drink!</p>
+        </div>
 
-                setTimeout(() => {
-                    document.getElementById("glasStatus").textContent = "✅ Glas erkannt";
-                    document.getElementById("ginStatus").textContent = "✅ Genug Gin";
-                    document.getElementById("tonicStatus").textContent = "✅ Genug Tonic";
-                }, 1000);
-            }
-
-            function zeigeStart(){
-                document.getElementById("status-screen").style.display = "none";
-                document.getElementById("start-screen").style.display = "block";
-            }
-        </script>
+        <div id="info-bereich">
+            <div id="menge">Anzahl der Drinks: -</div>
+            <div id="highscore">
+                <strong>Top 3:</strong>
+                <ol id="highscore-Liste"></ol>
+            </div>
+        </div>
     </body>
 </html>
