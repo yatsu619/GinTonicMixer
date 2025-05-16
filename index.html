@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
+        <title>Wasserspender</title>
+    <style>
+        @font-face {
+            font-family: 'Kashima';
+            src: url('fonts/Kashima Demo.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+    </head>
+    <body>
+        <h1 class="title">Wasserspender5000</h1>
+
+        <div class="box-start" id="start-screen">
+            <p>Bitte geben Sie Ihren Namen ein:</p>
+            <input type="text" id="nameInput" placeholder="Name eingeben" oninput="pruefeName()">
+            <br><br>
+            <button id="startBtn" onclick="zeigeStatusanzeige()" disabled>Start</button>
+        </div>
+
+        <div class="box-status" id="status-screen" style="display: none;">
+            <h2>Status</h2>
+            <p id="glasStatus">❌ Glas nicht erkannt</p>
+            <p id="ginStatus">❌ Nicht genug Gin</p>
+            <p id="tonicStatus">❌ Nicht genug Tonic</p>
+            <button id="startMix" onclick="mixerStarten()" disabled>Starten</button> 
+            <div id="hinweis" style="margin-top: 30px; display: none;">
+                <p id="hinweisText">⚠️ Bitte Glas bereitstellen</p>
+                <button onlcick="zeigeStatusanzeige()">Fertig</button>
+            </div>                 
+        </div>
+
+        <div class="box-lade" id="lade-screen" style="display: none;">
+            <h2>Mischen läuft...</h2>
+            <div id="ladebalken-wrapper" style="background: #ddd; width: 80%; margin: auto; height: 40px; border-radius: 20px; overflow: hidden;">
+                <div id="ladebalken" style="background: #4caf50; height: 100%; width: 0%; transition: width 1s;"></div>
+            </div> 
+            <p id="ladeStatusText">Bitte warten...</p>
+        </div>
+
+        <div class="box-final" id="final-screen" style="display: none;">
+            <h2>Abgefüllt!</h2>
+            <p>Genieß deinen Drink!</p>
+        </div>
+
+        <div id="info-bereich">
+            <div id="menge">Anzahl der Drinks: -</div>
+            <div id="highscore">
+                <strong>Top 3:</strong>
+                <ol id="highscore-Liste"></ol>
+            </div>
+        </div>
+    </body>
+</html>
