@@ -11,33 +11,38 @@ function zeigeStatusanzeige() {
     // Hinweisbereich zurücksetzen
     document.getElementById("hinweis").style.display = "none";
 
-    // Beispiel: eine simulierte Sensorprüfung
-    setTimeout(() => {
-        const glasErkannt = false;   // ← hier simulieren: false = Fehler
-        const ginOk = true;
-        const tonicOk = true;
+    fetch('http://127.0.0.1:5000/status')
+        .then(response => response.json())
+        .then(data => {
+            const glasErkannt = data.glas;   // ← hier simulieren: false = Fehler
+            const ginOk = data.gin;
+            const tonicOk = data.tonic;
 
-        document.getElementById("glasStatus").textContent = glasErkannt ? "✅ Glas erkannt" : "❌ Glas nicht erkannt";
-        document.getElementById("ginStatus").textContent = ginOk ? "✅ Genug Gin" : "❌ Nicht genug Gin";
-        document.getElementById("tonicStatus").textContent = tonicOk ? "✅ Genug Tonic" : "❌ Nicht genug Tonic";
+            document.getElementById("glasStatus").textContent = glasErkannt ? "✅ Glas erkannt" : "❌ Glas nicht erkannt";
+            document.getElementById("ginStatus").textContent = ginOk ? "✅ Genug Gin" : "❌ Nicht genug Gin";
+            document.getElementById("tonicStatus").textContent = tonicOk ? "✅ Genug Tonic" : "❌ Nicht genug Tonic";
 
-        // Hinweis anzeigen, wenn etwas fehlt
-        if (!glasErkannt) {
-            zeigeHinweis("⚠️ Bitte ein Glas bereitstellen");
-        } else if (!ginOk) {
-            zeigeHinweis("⚠️ Bitte Gin nachfüllen");
-        } else if (!tonicOk) {
-            zeigeHinweis("⚠️ Bitte Tonic nachfüllen");
-        }
-        
-        const startBtn = document.getElementById("startMix");
-        if(glasErkannt && ginOk && tonicOk) {
-            startBtn.disabled = false;
-        } else {
-            startBtn.disabled = true;
-        }
+             // Hinweis anzeigen, wenn etwas fehlt
+            if (!glasErkannt) {
+                zeigeHinweis("⚠️ Bitte ein Glas bereitstellen");
+            } else if (!ginOk) {
+                zeigeHinweis("⚠️ Bitte Gin nachfüllen");
+            } else if (!tonicOk) {
+                zeigeHinweis("⚠️ Bitte Tonic nachfüllen");
+            }
 
-    }, 1000);
+            const startBtn = document.getElementById("startMix");
+            if(glasErkannt && ginOk && tonicOk) {
+                startBtn.disabled = false;
+            } else {
+                startBtn.disabled = true;
+            }
+        })
+        .catch(error => {
+            console.error("Fehler beim Laden des Status:", error);
+            zeigeHinweis("❌ Fehler beim Abrufen des Status");
+            document.getElementById("startMix").disabled = true;
+        });
 }
 
 function zeigeStart(){
@@ -53,37 +58,72 @@ function zeigeHinweis(text) {
 function mixerStarten(){
     console.log("mixerStarten() wurde ausgeführt");
 
+    const name = document.getElementById("nameInput").value
 
-    document.getElementById("status-screen").style.display = "none";
-    document.getElementById("lade-screen").style.display = "block";
+    fetch('http://127.0.0.1:5000/start_mix', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name: name})            //später: {name: ...}
+    })
 
-    const balken = document.getElementById("ladebalken");
-    let sekunden = 0;
-    const dauer = 5;
+    .then(response => response.json())
+    .then(data => {
+        if(data.status === 'ok'){
+            document.getElementById("status-screen").style.display = "none";
+            document.getElementById("lade-screen").style.display = "block";
 
-    const intervall = setInterval(() => {
-        sekunden++;
-        const prozent = Math.min((sekunden / dauer) * 100, 100);
-        balken.style.width = prozent + "%";
+            const balken = document.getElementById("ladebalken");
+            let sekunden = 0;
+            const dauer = 5;
 
-        document.getElementById("ladeStatusText").textContent = `Ladevorgang: ${Math.round(prozent)}%`;
+            const intervall = setInterval(() => {
+                sekunden++;
+                const prozent = Math.min((sekunden / dauer) * 100, 100);
+                balken.style.width = prozent + "%";
+                document.getElementById("ladeStatusText").textContent = `Ladevorgang: ${Math.round(prozent)}%`;
 
-        if(sekunden >= dauer) {
-            clearInterval(intervall);
-            document.getElementById("ladeStatusText").textContent = "Abgefüllt!";
+                if (sekunden >= dauer) {
+                    clearInterval(intervall);
+                    document.getElementById("lade-screen").style.display = "none";
+                    document.getElementById("final-screen").style.display = "block";
+
+                    const name = document.getElementById("nameInput").value;
+
+                    //Hier werden die Daten an Server geschickt
+                    fetch('http://127.0.0.1:5000/log', {
+                        method: 'POST',
+                        headers: {'Content.Type': 'application/json'},
+                        body: JSON.stringly({name: name,})
+                    });
+
+                    setTimeout(() => {
+                        document.getElementById("final-screen").style.display = "none";
+                        document.getElementById("start-screen").style.display = "block";
+
+                        //Name zurücksetzen
+                        document.getElementById("nameInput").value = "";
+                        document.getElementById("startBtn").disabled = true;
+
+                        //Status zurücksetzen
+                        document.getElementById("glasStatus").textContent = "❌ Glas nicht erkannt";
+                        document.getElementById("ginStatus").textContent = "❌ Nicht genug Gin";
+                        document.getElementById("tonicStatus").textContent = "❌ Nicht genug Tonic";
+                        document.getElementById("startMix").disabled = true;
+                    }, 5000); //50000 Millisekunden 
+                }
+            }, 1000);
+
         }
+    })
+    .catch(error => {
+        console.error("Fehler bei /start_mix", error);
+    }); 
 
-        if (sekunden >= dauer) {
-            clearInterval(intervall);
-
-            document.getElementById("lade-screen").style.display = "none";
-            document.getElementById("final-screen").style.display = "block";
-        }
-    }, 1000);
+    
 }
 
 function ladeStatistik() {
-  fetch('/statistik') // dein Python-Server liefert das z. B.
+  fetch('http://127.0.0.1:5000/statistik') // dein Python-Server liefert das z. B.
     .then(res => res.json())
     .then(data => {
       // Gesamtmenge anzeigen
