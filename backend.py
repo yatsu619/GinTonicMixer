@@ -1,8 +1,12 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 CORS(app) #erlaubt Anfragen von der HTML-Datei (z.B. lokal geöffnet mit file://)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 #--- POST /start_mix ---
 @app.route('/start_mix', methods=['POST'])
@@ -40,7 +44,7 @@ def status():
 
 #---Flask-Server starten ---
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000) #debug=True: Fehler werden im Browser angezeigt, host='
 
 @app.route('/log', methods=['POST'])
 def log_mix():
