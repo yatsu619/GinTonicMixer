@@ -15,7 +15,6 @@ def create_user_db():
                 id INTEGER auto_increment PRIMARY KEY,
                 benutzername TEXT NOT NULL,
                 userscore INTEGER NOT NULL,
-                password TEXT NOT NULL
             )
         ''')
         conn.commit()
