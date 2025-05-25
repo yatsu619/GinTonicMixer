@@ -12,9 +12,9 @@ def create_user_db():
         c = conn.cursor()
         c.execute('''
             CREATE TABLE IF NOT EXISTS users (
-                id INTEGER auto_increment PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 benutzername TEXT NOT NULL,
-                userscore INTEGER NOT NULL,
+                userscore INTEGER NOT NULL
             )
         ''')
         conn.commit()

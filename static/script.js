@@ -58,7 +58,9 @@ function zeigeHinweis(text) {
 function mixerStarten(){
     console.log("mixerStarten() wurde ausgeführt");
 
-    const name = document.getElementById("nameInput").value
+    const name = document.getElementById("nameInput").value;
+    console.log("MQTT-Befehl an /start_mix gesendet für:", name);
+    // Hier wird der Startbefehl an den Server geschickt
 
     fetch('http://127.0.0.1:5000/start_mix', {
         method: 'POST',
@@ -88,6 +90,8 @@ function mixerStarten(){
                     document.getElementById("final-screen").style.display = "block";
 
                     const name = document.getElementById("nameInput").value;
+                    console.log("Logging an /log gesendet für:", name);
+
 
                     //Hier werden die Daten an Server geschickt
                     fetch('http://127.0.0.1:5000/log', {
@@ -127,18 +131,50 @@ function ladeStatistik() {
     .then(res => res.json())
     .then(data => {
       // Gesamtmenge anzeigen
-      document.getElementById("menge").textContent = `Menge: ${data.gesamt}`;
+      document.getElementById("menge").textContent = "Anzahl der Drinks:" + data.gesamt;
 
       // Highscore anzeigen
-      const liste = document.getElementById("highscore-liste");
+      const liste = document.getElementById("Highscore-Liste");
       liste.innerHTML = "";
+
       data.highscore.forEach(eintrag => {
         const li = document.createElement("li");
         li.textContent = `${eintrag.name} (${eintrag.anzahl})`;
         liste.appendChild(li);
       });
+    })
+    .catch(error => {
+      console.error("Fehler beim Laden der Statistik:", error);
     });
 }
 
-// Beim Laden starten
-window.onload = ladeStatistik;
+function aktualisiereStatus() {
+  fetch('/status')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("glasStatus").textContent = data.glas ? "✅ Glas erkannt" : "❌ Glas nicht erkannt";
+      document.getElementById("ginStatus").textContent = data.gin ? "✅ Genug Gin" : "❌ Nicht genug Gin";
+      document.getElementById("tonicStatus").textContent = data.tonic ? "✅ Genug Tonic" : "❌ Nicht genug Tonic";
+
+      // Optional: Button freigeben, wenn alles erfüllt
+      const startMixBtn = document.getElementById("startMix");
+      if (data.glas && data.gin && data.tonic) {
+        startMixBtn.disabled = false;
+      } else {
+        startMixBtn.disabled = true;
+      }
+    })
+    .catch(error => {
+      console.error("Fehler beim Abrufen von /status:", error);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    ladeStatistik();
+    aktualisiereStatus();
+});
+
+
+setInterval(ladeStatistik, 5000); // alle 5 Sekunden Statistik aktualisieren
+setInterval(aktualisiereStatus, 2000); // alle 2 Sekunden
+

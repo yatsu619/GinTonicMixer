@@ -106,11 +106,14 @@ button:disabled {
 #info-bereich {
   position: absolute;
   top: 20px;
-  right: 30px;
-  text-align: right;
-  color: white;
+  right: 20px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   font-size: 1em;
-  font-family: sans-serif;
+  max-width: 200px;
+  text-align: right;
 }
 
 #menge {
@@ -118,9 +121,8 @@ button:disabled {
 }
 
 #highscore ol {
-  margin: 0;
+  margin-top: 10px;
   padding-left: 20px;
-  list-style: decimal;
 }
 
 
