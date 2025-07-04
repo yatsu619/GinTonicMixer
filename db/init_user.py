@@ -4,7 +4,7 @@ import os
 def create_user_db():
     db_path = os.path.join("db", "cocktail.db")
 
-    # Stelle sicher, dass der Ordner existiert
+    # Stellt sicher, dass der Ordner existiert
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
     # Datenbank und Tabelle erstellen
@@ -14,6 +14,7 @@ def create_user_db():
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 benutzername TEXT NOT NULL,
+                namekey TEXT NOT NULL UNIQUE,
                 userscore INTEGER NOT NULL
             )
         ''')

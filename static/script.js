@@ -1,3 +1,5 @@
+console.log("script.js wurde gelesen");
+
 function pruefeName(){
     const name = document.getElementById("nameInput").value.trim();
     const button = document.getElementById("startBtn");
@@ -5,16 +7,17 @@ function pruefeName(){
 }
 
 function zeigeStatusanzeige() {
+    aktualisiereStatus();
     document.getElementById("start-screen").style.display = "none";
     document.getElementById("status-screen").style.display = "block";
 
     // Hinweisbereich zurücksetzen
     document.getElementById("hinweis").style.display = "none";
 
-    fetch('http://127.0.0.1:5000/status')
+    fetch('http://192.168.137.1:5000/status')
         .then(response => response.json())
-        .then(data => {
-            const glasErkannt = data.glas;   // ← hier simulieren: false = Fehler
+        .then(data => {                       //richtige Sensorwerte
+            const glasErkannt = data.glas;   
             const ginOk = data.gin;
             const tonicOk = data.tonic;
 
@@ -31,7 +34,7 @@ function zeigeStatusanzeige() {
                 zeigeHinweis("⚠️ Bitte Tonic nachfüllen");
             }
 
-            const startBtn = document.getElementById("startMix");
+            const startBtn = document.getElementById("startMix");   //Bedingung um Mischvorgang zu starten
             if(glasErkannt && ginOk && tonicOk) {
                 startBtn.disabled = false;
             } else {
@@ -58,14 +61,14 @@ function zeigeHinweis(text) {
 function mixerStarten(){
     console.log("mixerStarten() wurde ausgeführt");
 
-    const name = document.getElementById("nameInput").value;
+    const name = document.getElementById("nameInput").value.trim()
     console.log("MQTT-Befehl an /start_mix gesendet für:", name);
     // Hier wird der Startbefehl an den Server geschickt
 
-    fetch('http://127.0.0.1:5000/start_mix', {
+    fetch('http://192.168.137.1:5000/start_mix', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({name: name})            //später: {name: ...}
+        body: JSON.stringify({name: name})            
     })
 
     .then(response => response.json())
@@ -74,17 +77,19 @@ function mixerStarten(){
             document.getElementById("status-screen").style.display = "none";
             document.getElementById("lade-screen").style.display = "block";
 
+            
+            const dauer = 52;
             const balken = document.getElementById("ladebalken");
-            let sekunden = 0;
-            const dauer = 5;
+            const startZeit = Date.now();
 
             const intervall = setInterval(() => {
-                sekunden++;
-                const prozent = Math.min((sekunden / dauer) * 100, 100);
+                const vergangen = (Date.now() - startZeit) / 1000; // in Sekunden
+                const prozent = Math.min((vergangen / dauer) * 100, 100);
+
                 balken.style.width = prozent + "%";
                 document.getElementById("ladeStatusText").textContent = `Ladevorgang: ${Math.round(prozent)}%`;
 
-                if (sekunden >= dauer) {
+                if (vergangen >= dauer) {
                     clearInterval(intervall);
                     document.getElementById("lade-screen").style.display = "none";
                     document.getElementById("final-screen").style.display = "block";
@@ -94,13 +99,14 @@ function mixerStarten(){
 
 
                     //Hier werden die Daten an Server geschickt
-                    fetch('http://127.0.0.1:5000/log', {
+                    fetch('http://192.168.137.1:5000/log', {
                         method: 'POST',
-                        headers: {'Content.Type': 'application/json'},
-                        body: JSON.stringly({name: name,})
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({name: name,})
                     });
 
                     setTimeout(() => {
+                        console.log("Rücksprung läuft:");
                         document.getElementById("final-screen").style.display = "none";
                         document.getElementById("start-screen").style.display = "block";
 
@@ -115,7 +121,7 @@ function mixerStarten(){
                         document.getElementById("startMix").disabled = true;
                     }, 5000); //50000 Millisekunden 
                 }
-            }, 1000);
+            }, 100);
 
         }
     })
@@ -127,7 +133,7 @@ function mixerStarten(){
 }
 
 function ladeStatistik() {
-  fetch('http://127.0.0.1:5000/statistik') // dein Python-Server liefert das z. B.
+  fetch('http://192.168.137.1:5000/statistik') 
     .then(res => res.json())
     .then(data => {
       // Gesamtmenge anzeigen
@@ -156,12 +162,22 @@ function aktualisiereStatus() {
       document.getElementById("ginStatus").textContent = data.gin ? "✅ Genug Gin" : "❌ Nicht genug Gin";
       document.getElementById("tonicStatus").textContent = data.tonic ? "✅ Genug Tonic" : "❌ Nicht genug Tonic";
 
-      // Optional: Button freigeben, wenn alles erfüllt
+      // Button freigeben, wenn alles erfüllt
       const startMixBtn = document.getElementById("startMix");
       if (data.glas && data.gin && data.tonic) {
         startMixBtn.disabled = false;
+        document.getElementById("hinweis").style.display = "none";  // Hinweis ausblenden, wenn alles erfüllt ist
       } else {
         startMixBtn.disabled = true;
+
+        // Dynamischer Hinweis, abhängig vom Fehler
+        if (!data.glas) {
+          zeigeHinweis("Bitte ein Glas bereitstellen!");
+        } else if (!data.gin) {
+          zeigeHinweis("Bitte Gin nachfüllen!");
+        } else if (!data.tonic) {
+          zeigeHinweis("Bitte Tonic nachfüllen!");
+        }
       }
     })
     .catch(error => {

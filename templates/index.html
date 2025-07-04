@@ -3,20 +3,22 @@
     <head>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         <script src="{{ url_for('static', filename='script.js') }}"></script>
-        <title>Wasserspender</title>
+        <title>Gin-Tonic Mixer</title>
     <style>
         @font-face {
             font-family: 'Kashima';
-            src: url('fonts/Kashima Demo.otf') format('opentype');
+            src: url('font/Kashima Demo.otf') format('opentype');
             font-weight: normal;
             font-style: normal;
         }
     </style>
     </head>
     <body>
-        <h1 class="title">Wasserspender5000</h1>
-
-        <div class="box-start" id="start-screen">
+        <div class="title-box">
+            <h1 class="title">Gin + Tonic Mixer</h1>
+        </div>
+        
+        <div class="box-start" id="start-screen">       
             <p>Bitte geben Sie Ihren Namen ein:</p>
             <input type="text" id="nameInput" placeholder="Name eingeben" oninput="pruefeName()">
             <br><br>
@@ -28,10 +30,11 @@
             <p id="glasStatus">❌ Glas nicht erkannt</p>
             <p id="ginStatus">❌ Nicht genug Gin</p>
             <p id="tonicStatus">❌ Nicht genug Tonic</p>
-            <button id="startMix" onclick="mixerStarten()" disabled>Starten</button> 
+            <button id="startMix" onclick="mixerStarten()" disabled>Starten</button>
+            <hr>
             <div id="hinweis" style="margin-top: 30px; display: none;">
                 <p id="hinweisText">⚠️ Bitte Glas bereitstellen</p>
-                <button onlcick="zeigeStatusanzeige()">Fertig</button>
+                
             </div>                 
         </div>
 
@@ -52,7 +55,7 @@
             <div id="menge">Anzahl der Drinks: -</div>
             <div id="highscore">
                 <strong>Top 3:</strong>
-                <ol id="highscore-Liste"></ol>
+                <ol id="Highscore-Liste"></ol>
             </div>
         </div>
     </body>

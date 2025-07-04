@@ -1,12 +1,41 @@
+@font-face {
+  font-family: 'Kashima';
+  src: url('/static/font/KashimaDemo.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
 body{
-    background-color: #1c3563;  
+    background-image: url("/static/edgar-chaparro-Lwx-q6OdGAc-unsplash.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
     text-align: center;
     padding: 50px;
     }
 
+.title-box {
+    background-color: #fdf6ed; 
+    padding: 70px 40px 30px 40px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:150px;
+    margin: 50px auto;
+    width: fit-content;
+    max-width: 90vw;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+}    
+
 .title{
+    transform: translateY(4px);
     font-family: 'Kashima', sans-serif;
-    font-size: 5em;
+    font-size: 7em;
     color: #000000;
     margin-bottom: 40px;
     }
@@ -23,7 +52,7 @@ body{
 .box-start p,
 .box-status p,
 .box-lade p {
-  font-size: 1.8em;
+  font-size: 2.0em;
   line-height: 1.2em;
   margin-bottom: 20px;
   text-align: center;
@@ -32,7 +61,7 @@ body{
 .box-start h2,
 .box-status h2,
 .box-lade h2 {
-  font-size: 2em;
+  font-size: 2.5em;
   margin-bottom: 20px;
   text-align: center;
 }
@@ -42,12 +71,12 @@ body{
 .box-status,
 .box-lade,
 .box-final {
-    background-color: white;
+    background-color: #fdf6ed;
     border-radius: 15px;
     padding: 40px;
-    max-width: 800px;
-    min-height: 300px;
-    margin: auto;
+    max-width: 1000px;
+    min-height: 500px;
+    margin: 150px auto 0 auto;
     box-shadow: 0  0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
@@ -79,7 +108,7 @@ body{
   font-size: 1.6em;
 }
 
-input[type="text"] {
+input[type="text"] {   
   font-size: 1.2em;
   padding: 10px;
   width: 60%;
@@ -88,14 +117,14 @@ input[type="text"] {
 }
 
 button {
-  font-size: 1.2em;
-  padding: 10px 30px;
+  font-size: 1.5em;
+  padding: 15px 40px;
   margin: 10px;
   cursor: pointer;
   border: none;
   border-radius: 8px;
   background-color: #1c3563;
-  color: white;
+  color: rgb(224, 224, 224);
 }
 
 button:disabled {
@@ -107,10 +136,10 @@ button:disabled {
   position: absolute;
   top: 20px;
   right: 20px;
-  background-color: white;
+  background-color: #fdf6ed;
   padding: 15px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   font-size: 1em;
   max-width: 200px;
   text-align: right;
